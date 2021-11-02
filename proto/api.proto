@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api;
+option go_package = "grpc/proto";
+
+
+service Api {
+    rpc GetHello (Request) returns (Response) {};
+}
+
+message Request {
+    string name = 1;
+}
+
+message Response {
+    string message = 1;
+}
