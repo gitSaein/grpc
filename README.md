@@ -2,10 +2,18 @@
 
 client streaming grpc
 - client sends a stream of messages to the server instead of a single message.
+- stub local object, wrapping protocol buffer message
 
 
-server streaming grpc
+server streaming grpc 
 - server returns a stream of messages in response to a client's request. 
+- service, function, decoding -> service -> encoding -> client
+
+metadata
+- rpc call key-value form
+
+channel
+- host, port grpc server connection
 
 
 proto build
