@@ -4,6 +4,9 @@ import (
 	"log"
 	"net"
 
+	pb "grpc/build/api"
+	handler "grpc/server/handler"
+
 	"google.golang.org/grpc"
 )
 
@@ -14,7 +17,11 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	
-	if err
 
+	pb.RegisterApiServer(grpcServer, &handler.APIServer{})
+	//추가
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }

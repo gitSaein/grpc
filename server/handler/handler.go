@@ -2,15 +2,18 @@ package handler
 
 import (
 	"context"
-	pb "grpc/build/proto/api"
 	"log"
+
+	pb "grpc/build/api"
 )
 
+// APIServer is representation of protobuf ApiServer
 type APIServer struct {
 }
 
-func (s *APIServer) GetHello(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
+// GetHello implements api.proto.ApiServer.GetHello
+func (s *APIServer) GetHello(ctx context.Context, in *pb.Request) (*pb.Response, error) {
 	log.Printf("Received: %v", in.GetName())
 
-	return &pb.Reply{Message: "Hello " + in.GetName()}, nil
+	return &pb.Response{Message: "Hello " + in.GetName()}, nil
 }
