@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiClient interface {
-	GetHello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	GetHello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 }
 
 type apiClient struct {
@@ -29,8 +29,8 @@ func NewApiClient(cc grpc.ClientConnInterface) ApiClient {
 	return &apiClient{cc}
 }
 
-func (c *apiClient) GetHello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *apiClient) GetHello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+	out := new(Reply)
 	err := c.cc.Invoke(ctx, "/api.Api/GetHello", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *apiClient) GetHello(ctx context.Context, in *Request, opts ...grpc.Call
 // All implementations must embed UnimplementedApiServer
 // for forward compatibility
 type ApiServer interface {
-	GetHello(context.Context, *Request) (*Response, error)
+	GetHello(context.Context, *Request) (*Reply, error)
 	mustEmbedUnimplementedApiServer()
 }
 
@@ -50,7 +50,7 @@ type ApiServer interface {
 type UnimplementedApiServer struct {
 }
 
-func (UnimplementedApiServer) GetHello(context.Context, *Request) (*Response, error) {
+func (UnimplementedApiServer) GetHello(context.Context, *Request) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHello not implemented")
 }
 func (UnimplementedApiServer) mustEmbedUnimplementedApiServer() {}

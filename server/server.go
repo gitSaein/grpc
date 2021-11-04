@@ -4,14 +4,14 @@ import (
 	"log"
 	"net"
 
-	pb "grpc/build/api"
+	pb "grpc/build/proto/api"
 	handler "grpc/server/handler"
 
 	"google.golang.org/grpc"
 )
 
 func main() {
-	lis, err := net.Listen("tcp", "localhost:50051")
+	lis, err := net.Listen("tcp", "127.0.0.1:50051")
 	if err != nil {
 		log.Fatalf("failed to listen %v", err)
 	}

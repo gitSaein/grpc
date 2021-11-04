@@ -7,11 +7,11 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "grpc/build/api"
+	pb "grpc/build/proto/api"
 )
 
 const (
-	address = "localhost:50051"
+	address = "127.0.0.1:50051"
 	name    = "AaronRoh"
 )
 

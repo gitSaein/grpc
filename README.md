@@ -39,7 +39,7 @@ channel
 
 
 proto build
-- protoc --go_out=build/api/. --go_opt=paths=source_relative --go-grpc_out=build/api/. --go-grpc_opt=paths=source_relative proto/api.proto
+- protoc --go_out=build/. --go_opt=paths=source_relative --go-grpc_out=build/. --go-grpc_opt=paths=source_relative proto/api.proto
 
 
 issue. 
@@ -51,4 +51,5 @@ issue.
 2) package [name] is not in GOROOT 에러
 
 > go env -w GO111MODULE="off"
+>  project path ==> $GOPATH/src/{go project path}
 
