@@ -8,6 +8,10 @@
 ## env
 - GO111MODULE: 
 
+## middleware
+- 
+
+
 # protocol buffer
 
 ## compiler
@@ -21,6 +25,9 @@
 
 
 # grpca
+
+## 특징
+- gRPC는 HTTP/2 레이어 위에서 protocol buffers 를 사용해 직렬화된 바이트 스트림으로 통신하므로 json기반의 통신보다 더 가볍고 그만큼 속도가 빠릅니다. 
 
 client streaming grpc
 - client sends a stream of messages to the server instead of a single message.

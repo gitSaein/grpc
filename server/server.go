@@ -1,27 +1,25 @@
 package main
 
 import (
-	"log"
-	"net"
-
-	pb "grpc/build/proto/api"
-	handler "grpc/server/handler"
-
-	"google.golang.org/grpc"
+	"fmt"
+	"net/http"
 )
 
+func hello(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "hello\n")
+}
+
+func headers(w http.ResponseWriter, req *http.Request) {
+	for name, headers := range req.Header {
+		for _, h := range headers {
+			fmt.Fprintf(w, "%v: %v\n", name, h)
+		}
+	}
+}
+
 func main() {
-	lis, err := net.Listen("tcp", "127.0.0.1:50051")
-	if err != nil {
-		log.Fatalf("failed to listen %v", err)
-	}
+	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/headers", headers)
 
-	grpcServer := grpc.NewServer()
-
-	pb.RegisterApiServer(grpcServer, &handler.APIServer{})
-	//추가
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	http.ListenAndServe(":8090", nil)
 }
