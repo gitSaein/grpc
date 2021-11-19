@@ -17,7 +17,9 @@ import (
 )
 
 // DemoServiceServer defines a Server.
-type DemoServiceServer struct{}
+type DemoServiceServer struct {
+	pb.UnimplementedDemoServiceServer
+}
 
 func newDemoServer() *DemoServiceServer {
 	return &DemoServiceServer{}
