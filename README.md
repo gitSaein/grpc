@@ -11,6 +11,8 @@ OpenCensus Go libraries require Go 1.8 or later.
 
 protoc -I rpc rpc/defs.proto --go_out=plugins=grpc:rpc
 
+protoc -I proto proto/service.proto --go_out=plugins=grpc:proto
+
 ## Refs
 https://opencensus.io/guides/grpc/go/#0
 
