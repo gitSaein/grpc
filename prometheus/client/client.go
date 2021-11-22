@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"google.golang.org/grpc"
@@ -40,7 +42,8 @@ func main() {
 	defer conn.Close()
 
 	// Create a HTTP server for prometheus.
-	httpServer := &http.Server{Handler: promhttp.HandlerFor(reg, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9094)}
+	// httpServer := &http.Server{Handler: promhttp.HandlerFor(reg, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9094)}
+	httpServer := &http.Server{Handler: promhttp.Handler(), Addr: fmt.Sprintf("0.0.0.0:%d", 9094)}
 
 	// Start your http server for prometheus.
 	go func() {
@@ -52,10 +55,23 @@ func main() {
 	// Create a gRPC server client.
 	client := pb.NewDemoServiceClient(conn)
 	fmt.Println("Start to call the method called SayHello every 3 seconds")
+
+	// ==========================================================================================
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+
 	go func() {
-		for {
+		wg.Done()
+		k := 0
+		for i := 0; i < 3; i++ {
 			// Call “SayHello” method and wait for response from gRPC Server.
-			_, err := client.SayHello(context.Background(), &pb.HelloRequest{Name: "Test"})
+			k++
+			sliceMsg := []string{"[guest 1] ", strconv.Itoa(k)}
+			message := strings.Join(sliceMsg, " - ")
+			log.Printf("message send: %v", message)
+
+			_, err := client.SayHello(context.Background(), &pb.HelloRequest{Name: message})
 			if err != nil {
 				log.Printf("Calling the SayHello method unsuccessfully. ErrorInfo: %+v", err)
 				log.Printf("You should to stop the process")
@@ -64,6 +80,49 @@ func main() {
 			time.Sleep(3 * time.Second)
 		}
 	}()
+	go func() {
+		wg.Done()
+		k := 0
+		for i := 0; i < 3; i++ {
+			// Call “SayHello” method and wait for response from gRPC Server.
+			k++
+			sliceMsg := []string{"[guest 2] ", strconv.Itoa(k)}
+			message := strings.Join(sliceMsg, " - ")
+			log.Printf("message send: %v", message)
+
+			_, err := client.SayHello(context.Background(), &pb.HelloRequest{Name: message})
+			if err != nil {
+				log.Printf("Calling the SayHello method unsuccessfully. ErrorInfo: %+v", err)
+				log.Printf("You should to stop the process")
+				return
+			}
+			time.Sleep(3 * time.Second)
+		}
+	}()
+
+	go func() {
+		wg.Done()
+		k := 0
+		for i := 0; i < 3; i++ {
+			// Call “SayHello” method and wait for response from gRPC Server.
+			k++
+			sliceMsg := []string{"[guest 3] ", strconv.Itoa(k)}
+			message := strings.Join(sliceMsg, " - ")
+			log.Printf("message send: %v", message)
+
+			_, err := client.SayHello(context.Background(), &pb.HelloRequest{Name: message})
+			if err != nil {
+				log.Printf("Calling the SayHello method unsuccessfully. ErrorInfo: %+v", err)
+				log.Printf("You should to stop the process")
+				return
+			}
+			time.Sleep(3 * time.Second)
+		}
+	}()
+	wg.Wait()
+
+	// ==========================================================================================
+
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("You can press n or N to stop the process of client")
 	for scanner.Scan() {

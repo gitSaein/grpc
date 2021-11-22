@@ -28,6 +28,9 @@ func newDemoServer() *DemoServiceServer {
 // SayHello implements a interface defined by protobuf.
 func (s *DemoServiceServer) SayHello(ctx context.Context, request *pb.HelloRequest) (*pb.HelloResponse, error) {
 	customizedCounterMetric.WithLabelValues(request.Name).Inc()
+	// log.Fatalf("SayHello 함수: %v", request.Name)
+	log.Printf("message send: %v", string(request.Name))
+
 	return &pb.HelloResponse{Message: fmt.Sprintf("Hello %s", request.Name)}, nil
 }
 
@@ -61,7 +64,8 @@ func main() {
 	defer lis.Close()
 
 	// Create a HTTP server for prometheus.
-	httpServer := &http.Server{Handler: promhttp.HandlerFor(reg, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9092)}
+	// httpServer := &http.Server{Handler: promhttp.HandlerFor(reg, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9092)}
+	httpServer := &http.Server{Handler: promhttp.Handler(), Addr: fmt.Sprintf("0.0.0.0:%d", 9092)}
 
 	// Create a gRPC Server with gRPC interceptor.
 	grpcServer := grpc.NewServer(
