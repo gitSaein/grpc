@@ -6,7 +6,8 @@ import (
 	"log"
 	"time"
 
-	pb "gitlab.bemilycorp.com/prototype/echo-grpc/protos"
+	pb "grpc/protos"
+
 	"google.golang.org/grpc"
 )
 

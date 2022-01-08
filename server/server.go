@@ -2,18 +2,18 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"math/big"
 	"net"
 	"time"
 
-	pb "gitlab.bemilycorp.com/prototype/echo-grpc/protos"
+	pb "grpc/protos"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
+
+	interceptor "grpc/interceptors"
 )
 
 const (
@@ -31,24 +31,8 @@ type Server struct {
 	networkListener net.Listener
 }
 
-func getHttpHeader(ctx context.Context) {
-
-	log.Println("================== HEADER start ==================")
-
-	method, _ := grpc.Method(ctx)
-	log.Printf("method: %s", method)
-	md, _ := metadata.FromIncomingContext(ctx)
-
-	log.Printf("metadata: %v", md)
-	log.Println("==================  HEADER end  ==================")
-
-}
-
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	start := time.Now()
-
-	getHttpHeader(ctx)
 
 	// deadline
 	for i := 0; i < 5; i++ {
@@ -59,12 +43,6 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 		time.Sleep(1 * time.Second)
 	}
 
-	r := new(big.Int)
-	fmt.Println(r.Binomial(1000, 10))
-
-	elapsed := time.Since(start)
-	log.Printf("Received: %v, take time - %s", in.GetName(), elapsed)
-
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
@@ -74,7 +52,7 @@ func ListenAndGrpcServer() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(interceptor.UnaryServerInterceptor))
 
 	pb.RegisterGreeterServer(s, &server{}) // helloworld_grpc.pb.go 에 있음
 	reflection.Register(s)                 // grpcurl 명령을 사용하게 하기 위해

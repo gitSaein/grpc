@@ -53,3 +53,8 @@ issue.
 > go env -w GO111MODULE="off"
 >  project path ==> $GOPATH/src/{go project path}
 
+3) could not import
+
+> go mod init    
+> go mod tiny
+
