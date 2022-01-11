@@ -32,7 +32,7 @@ func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.Una
 
 	m, err := handler(ctx, req)
 	if err != nil {
-		log.Fatalf(" [error] server interceptor handler: %v", err)
+		log.Printf(" [error] server interceptor handler: %v", err)
 	}
 
 	log.Printf("Post Proc Message: %s", m)

@@ -49,4 +49,6 @@ func (c *healthClient) Check(ctx context.Context) (bool, error) {
 		return false, err
 
 	}
+	return false, err
+
 }

@@ -109,7 +109,7 @@ func ListenAndGrpcServer() {
 	reflection.Register(s)
 
 	pb.RegisterGreeterServer(s, &server{}) // helloworld_grpc.pb.go 에 있음
-	reflection.Register(s)                 // grpcurl 명령을 사용하게 하기 위해
+	// reflection.Register(s)                 // grpcurl 명령을 사용하게 하기 위해
 
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil { //grpc 서버 시작

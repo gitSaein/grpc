@@ -45,6 +45,7 @@ func CheckServerStatus(conn *grpc.ClientConn) {
 }
 
 func main() {
+
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -52,19 +53,19 @@ func main() {
 	}
 	defer conn.Close() // 프로그램 종료시 conn.Close() 호출
 
+	//server health check
 	client := rpc.NewGrpcHealthClient(conn)
 
-	for {
-		ok, err := client.Check(context.Background())
+	ok, err := client.Check(context.Background())
 
-		if err != nil || ok {
-			log.Panicf("can't connect grpc server: %v, code: %v\n", err, grpc.Code(err))
-		}
+	if !ok || err != nil {
+		log.Printf("can't connect grpc server: %v, code: %v\n", err, grpc.Code(err))
+	} else {
+		log.Println("connect the grpc server successfully")
 	}
 
 	c := pb.NewGreeterClient(conn)
 	log.Printf("connected status: %v", conn.GetState())
-
 	ctx, cancel := context.WithTimeout(context.TODO(), 1*time.Second)
 	defer cancel()
 
